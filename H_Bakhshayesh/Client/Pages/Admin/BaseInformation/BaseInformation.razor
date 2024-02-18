@@ -1,0 +1,68 @@
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@page "/Admin/BaseInformation"
+@layout AdminMainLayout
+
+<h3>اطلاعات پایه</h3>
+
+@if (baseInformations != null)
+{
+    <table class="table mt-3 table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">عنوان</th>
+                <th class="text-center">مقدار</th>
+                <th class="text-center">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in baseInformations)
+            {
+                <tr>
+                    <td>
+                        @item.TextField
+                    </td>
+                    <td>
+                        <InputTextArea @bind-Value="@item.Value" class="form-control"/>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" @onclick="@(() => ShowEditModal(item))" class="btn btn-warning my-2" data-toggle="modal" data-target="#EditModal">
+                            ویرایش
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger">اطلاعاتی یافت نشد.</div>
+}
+
+@code {
+    List<BaseInformationViewModel>? baseInformations = new();
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        baseInformations = await httpClient.GetFromJsonAsync<List<BaseInformationViewModel>>("api/BaseInformation/GetAll");
+        await base.OnInitializedAsync();
+    }
+
+    protected async void ShowEditModal(BaseInformationViewModel editModel)
+    {
+        if (editModel != null)
+        {
+            var res = await httpClient.PostAsJsonAsync<BaseInformationViewModel>("api/BaseInformation/Update", editModel);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/BaseInformation", true);
+            }
+        }
+
+    }
+}
