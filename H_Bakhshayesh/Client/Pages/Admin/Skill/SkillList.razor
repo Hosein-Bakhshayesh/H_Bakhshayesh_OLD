@@ -5,8 +5,198 @@
 @page "/Admin/SkillList"
 @layout AdminMainLayout
 
- <h3>لیست تخصص‌ها</h3>
+<h3 class="my-2">لیست تخصص‌ها</h3>
+
+<div @onclick="@AddSkillDisplay" class="btn btn-success my-4 @addBtnDisplay w-25">
+    تخصص جدید
+</div>
+<EditForm Model="@AddskillViewModel" class="@displayAdd">
+    <div class="w-100 my-4">
+
+        <div>
+            <span class="text-danger">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </span>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-6 w-100">
+                <label>
+                    عنوان : <span class="text-danger">*</span>
+                </label>
+                <InputText @bind-Value="@AddskillViewModel.Name" class="form-control" placeholder="عنوان" />
+            </div>
+            <div class="col-6 w-100">
+                <label>
+                    درصد پیشرفت : <span class="text-danger">*</span>
+                </label>
+                <InputNumber @bind-Value="@AddskillViewModel.ProgressValue" class="form-control mx-2" min="0" max="100" placeholder="درصد نوار پیشرفت" />
+            </div>
+            <div class="row text-center col-12 w-100 my-4 me-auto">
+                <button @onclick="@(()=>HandleValidSubmit(AddskillViewModel))" class="btn btn-success col-2">
+                    اضافه کردن
+                </button>
+                <button type="button" class="btn btn-danger mx-3 col-2 @closeBtnDisplay" @onclick="@AddSkillDisplay">
+                    بستن
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@if (skillViewModels != null && skillViewModels.Count > 0)
+{
+    <table class="table mt-3 table-bordered">
+
+        <thead>
+            <tr>
+                <th class="text-center">عنوان</th>
+                <th class="text-center">نوار پیشرفت</th>
+                <th class="text-center">درصد پیشرفت</th>
+                <th class="text-center">تاریخ آخرین آپدیت</th>
+                <th class="text-center">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in skillViewModels)
+            {
+                <tr>
+                    <td class="text-center">
+                        <InputText @bind-Value="@item.Name" class="form-control" />
+                    </td>
+                    <td class="row px-0 mx-0 my-auto text-center">
+                        <InputNumber @bind-Value="@item.ProgressValue" class="form-control mx-2 col-3" min="0" max="100" />
+                        <div class="progress p-0 col-7 my-auto">
+                            <div class="progress-bar my-ProgressBar" role="progressbar" style="width: @(item.ProgressValue)%" aria-valuenow="@item.ProgressValue" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                    <td>
+                        @if (@item.ProgressValue <= 20)
+                        {
+                            <div class="text-danger text-center">پایین</div>
+                        }
+                        else @if (@item.ProgressValue <= 40)
+                        {
+                            <div class="text-success text-center">خوب</div>
+                        }
+                        else @if (@item.ProgressValue <= 60)
+                        {
+                            <div class="text-warning text-center">متوسط</div>
+                        }
+                        else @if (@item.ProgressValue <= 80)
+                        {
+                            <div class="text-info text-center">عالی</div>
+                        }
+                        else @if (@item.ProgressValue <= 100)
+                        {
+                            <div class="text-primary text-center">حرفه‌ای</div>
+                        }
+
+                    </td>
+                    <td class="text-center">
+                        @if(item.UpdatedOn.HasValue)
+                        {
+                            @item.UpdatedOn.Value.ToString("yyyy/mm/dd")
+                        }
+                        else
+                        {
+                            @item.CreatedOn.ToString("yyyy/mm/dd")
+                        }
+                    </td>
+                    <td class="text-center">
+                        <button type="button" @onclick="@(() => EditModal(item))" class="btn btn-warning my-2">
+                            ویرایش
+                        </button>
+                        <button type="button" @onclick="@(() => DeleteModal(item))" class="btn btn-danger my-2">
+                            حذف
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="w-100">
+        <div class="alert alert-danger w-100">مقداری یافت نشد.</div>
+    </div>
+    <div class="text-center w-100 my-4 fw-bold">
+        اولین تخصص خود را ثبت کنید.
+    </div>
+}
 
 @code {
+    public List<SkillViewModel>? skillViewModels { get; set; }
+    public SkillViewModel AddskillViewModel = new SkillViewModel();
+    public string displayAdd = "d-none";
+    public string addBtnDisplay = "d-block";
+    public string closeBtnDisplay = "d-none";
+}
 
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        skillViewModels = await httpClient.GetFromJsonAsync<List<SkillViewModel>>($"api/Skill/GetAll");
+        await base.OnInitializedAsync();
+    }
+
+
+    protected async void EditModal(SkillViewModel editModel)
+    {
+        if (editModel != null)
+        {
+            editModel.UpdatedOn = DateTime.Now;
+            var res = await httpClient.PostAsJsonAsync<SkillViewModel>("api/Skill/Update", editModel);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/SkillList", true);
+            }
+        }
+    }
+
+    protected async void DeleteModal(SkillViewModel deleteModel)
+    {
+        if (deleteModel != null)
+        {
+            var res = await httpClient.PostAsJsonAsync<SkillViewModel>("api/Skill/Delete", deleteModel);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/SkillList", true);
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit(SkillViewModel model)
+    {
+        if (model != null)
+        {
+            model.CreatedOn = DateTime.Now;
+            model.UpdatedOn = DateTime.Now;
+            model.SkillId = Guid.NewGuid();
+            var res = await httpClient.PostAsJsonAsync<SkillViewModel>("api/Skill/Create", model);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/SkillList", true);
+            }
+        }
+    }
+
+    private void AddSkillDisplay()
+    {
+        if(displayAdd == "d-none")
+        {
+            displayAdd = "d-block";
+            addBtnDisplay = "d-none";
+            closeBtnDisplay = "d-block";
+        }
+        else
+        {
+            displayAdd = "d-none";
+            addBtnDisplay = "d-block";
+            closeBtnDisplay = "d-none";
+            AddskillViewModel = new SkillViewModel();
+        }
+    }
 }

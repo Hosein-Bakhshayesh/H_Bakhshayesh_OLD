@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using H_Bakhshayesh.Shared.ViewModels.Skill;
 using H_BakhshayeshModels.Context;
+using H_BakhshayeshModels.Models;
 using H_BakhshayeshServices.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +25,52 @@ namespace H_Bakhshayesh.Server.Controllers
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            return Ok();
+            List<Skill> skills = _skillServices.GetAll();
+            if(skills == null)
+            {
+                return NotFound(null);
+            }
+            List<SkillViewModel> model = _mapper.Map<List<Skill>, List<SkillViewModel>>(skills);
+            return Ok(model);
+        }
+        
+        [HttpPost("Update")]
+        public IActionResult UpdateSkill(SkillViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return NotFound("اطلاعات اشتباه ارسال شده است.");
+            }
+            var skill = _mapper.Map<SkillViewModel, Skill>(model);
+            var res = _skillServices.Update(skill);
+            _skillServices.Save();
+            return Ok(res);
+        }
+        
+        [HttpPost("Delete")]
+        public IActionResult DeleteSkill(SkillViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return NotFound("اطلاعات اشتباه ارسال شده است.");
+            }
+            var skill = _mapper.Map<SkillViewModel, Skill>(model);
+            var res = _skillServices.Delete(skill);
+            _skillServices.Save();
+            return Ok(res);
+        }
+
+        [HttpPost("Create")]
+        public IActionResult CreateSkill(SkillViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return NotFound("اطلاعات اشتباه ارسال شده است.");
+            }
+            var skill = _mapper.Map<SkillViewModel, Skill>(model);
+            var res = _skillServices.Add(skill);
+            _skillServices.Save();
+            return Ok(res);
         }
     }
 }

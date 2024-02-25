@@ -13,10 +13,9 @@ namespace H_Bakhshayesh.Shared.ViewModels.Document
         [Key]
         [DisplayName("آیدی")]
         public Guid DocumentId { get; set; }
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد عنوان ضروری است")]
         [DisplayName("عنوان")]
         public string Title { get; set; } = null!;
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
         [DisplayName("مسیر فایل")]
         public string FilePath { get; set; } = null!;
         [Required(ErrorMessage = "فیلد {0} ضروری است")]

@@ -1,0 +1,173 @@
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@page "/Admin/DocumentList"
+@layout AdminMainLayout
+
+<h3>مدارک و تقدیرنامه‌ها</h3>
+
+<div @onclick="@AddDocumentDisplay" class="btn btn-success my-4 @addBtnDisplay w-25">
+    مدرک جدید
+</div>
+<EditForm Model="@AddDocumentViewModel" class="@displayAdd">
+    <div class="w-100 my-4">
+
+        <div>
+            <span class="text-danger">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </span>
+            <hr />
+            <div class="alert alert-danger w-100 @ShowFormatError">
+                فرمت تصویر انتخاب شده اشتباه است. لطفا تنها تصویر با فرمت jpg انتخاب کنید.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 w-100">
+                <label>
+                    عنوان : <span class="text-danger">*</span>
+                </label>
+                <InputText @bind-Value="@AddDocumentViewModel.Title" class="form-control" placeholder="عنوان" />
+            </div>
+            <div class="col-6 w-100 my-auto">
+                <label>
+                    فایل : <span class="text-danger">*</span>
+                </label>
+                <InputFile OnChange="SelectFile" accept="image/jpeg" class="form-control" required />
+            </div>
+            <div class="row text-center col-12 w-100 my-4 me-auto">
+                <button @onclick="@(()=>HandleValidSubmit(AddDocumentViewModel))" class="btn btn-success col-2">
+                    اضافه کردن
+                </button>
+                <button type="button" class="btn btn-danger mx-3 col-2 @closeBtnDisplay" @onclick="@AddDocumentDisplay">
+                    بستن
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@if (documentViewModels != null && documentViewModels.Count > 0)
+{
+    <div class="row">
+        @foreach (var item in documentViewModels)
+        {
+            <div class="col-3">
+                <div>
+                    <img src="@item.FilePath" class="img-thumbnail w-100" />
+                </div>
+                <div class="text-center my-1">
+                    <InputTextArea @bind-Value="@item.Title" class="form-control w-100" />
+                </div>
+                <div class="text-center w-100">
+                    <div class="row p-0 mx-0">
+                        <button class="btn btn-danger col mx-1" @onclick="@(() => DeleteDocument(item))">حذف</button>
+                        <button class="btn btn-warning col mx-1" @onclick="@(() => UpdateDocument(item))">ویرایش</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-danger w-100 my-2">
+        مدرکی یافت نشد.
+    </div>
+}
+
+
+@code {
+    public List<DocumentViewModel>? documentViewModels { get; set; }
+    public DocumentViewModel AddDocumentViewModel = new DocumentViewModel();
+    public ImageFile filesBase64 = new ImageFile();
+    public IBrowserFile? imageFile;
+    public string displayAdd = "d-none";
+    public string addBtnDisplay = "d-block";
+    public string closeBtnDisplay = "d-none";
+    public string ShowFormatError = "d-none";
+
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        documentViewModels = await httpClient.GetFromJsonAsync<List<DocumentViewModel>>("api/Document/GetAll");
+        await base.OnInitializedAsync();
+    }
+
+    private async void DeleteDocument(DocumentViewModel model)
+    {
+        var res = await httpClient.PostAsJsonAsync<DocumentViewModel>("api/Document/Delete", model);
+        if (res != null)
+        {
+            navigationManager.NavigateTo("/Admin/DocumentList", true);
+        }
+    }
+
+    private async void UpdateDocument(DocumentViewModel model)
+    {
+        var res = await httpClient.PostAsJsonAsync<DocumentViewModel>("api/Document/Update", model);
+        if (res != null)
+        {
+            navigationManager.NavigateTo("/Admin/DocumentList", true);
+        }
+    }
+
+    private async Task HandleValidSubmit(DocumentViewModel model)
+    {
+        string fileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(filesBase64.fileName);
+        var msg = await httpClient.PutAsJsonAsync($"api/Document/SaveImage/{fileName}", filesBase64, System.Threading.CancellationToken.None);
+        if (model.Title != null)
+        {
+            model.DocumentId = Guid.NewGuid();
+            model.FilePath = "/Images/Documents/" + fileName;
+            model.CreatedOn = DateTime.Now;
+            var res = await httpClient.PostAsJsonAsync<DocumentViewModel>("api/Document/Create", model);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/DocumentList", true);
+            }
+        }
+    }
+
+
+    public async Task SelectFile(InputFileChangeEventArgs e)
+    {
+        string extension = Path.GetExtension(e.File.Name);
+        if (extension == ".jpg")
+        {
+            ShowFormatError = "d-none";
+            var file = e.File; // get the files selected by the users
+            var resizedFile = await file.RequestImageFileAsync(file.ContentType, 10000, 10000); // resize the image file
+            var buf = new byte[resizedFile.Size]; // allocate a buffer to fill with the file's data
+            using (var stream = resizedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buf); // copy the stream to the buffer
+            }
+            filesBase64 = (new ImageFile { base64data = Convert.ToBase64String(buf), contentType = file.ContentType, fileName = file.Name }); // convert to a base64 string!!
+        }
+        else
+        {
+            ShowFormatError = "d-block";
+        }
+    }
+
+    private void AddDocumentDisplay()
+    {
+        if (displayAdd == "d-none")
+        {
+            displayAdd = "d-block";
+            addBtnDisplay = "d-none";
+            closeBtnDisplay = "d-block";
+        }
+        else
+        {
+            displayAdd = "d-none";
+            addBtnDisplay = "d-block";
+            closeBtnDisplay = "d-none";
+            AddDocumentViewModel = new DocumentViewModel();
+        }
+    }
+}

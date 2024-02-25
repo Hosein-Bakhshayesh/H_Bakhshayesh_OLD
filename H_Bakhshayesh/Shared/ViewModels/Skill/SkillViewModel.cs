@@ -13,10 +13,10 @@ namespace H_Bakhshayesh.Shared.ViewModels.Skill
         [Key]
         [DisplayName("آیدی")]
         public Guid SkillId { get; set; }
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد نام ضروری است")]
         [DisplayName("نام مهارت")]
         public string Name { get; set; } = null!;
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد درصد مهارت ضروری است")]
         [DisplayName("درصد مهارت")]
         public int ProgressValue { get; set; }
         [Required(ErrorMessage = "فیلد {0} ضروری است")]

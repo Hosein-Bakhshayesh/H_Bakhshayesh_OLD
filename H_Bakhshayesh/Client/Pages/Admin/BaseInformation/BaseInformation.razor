@@ -28,7 +28,7 @@
                         <InputTextArea @bind-Value="@item.Value" class="form-control"/>
                     </td>
                     <td class="text-center">
-                        <button type="button" @onclick="@(() => ShowEditModal(item))" class="btn btn-warning my-2" data-toggle="modal" data-target="#EditModal">
+                        <button type="button" @onclick="@(() => EditModal(item))" class="btn btn-warning my-2" data-toggle="modal" data-target="#EditModal">
                             ویرایش
                         </button>
                     </td>
@@ -53,7 +53,7 @@ else
         await base.OnInitializedAsync();
     }
 
-    protected async void ShowEditModal(BaseInformationViewModel editModel)
+    protected async void EditModal(BaseInformationViewModel editModel)
     {
         if (editModel != null)
         {
