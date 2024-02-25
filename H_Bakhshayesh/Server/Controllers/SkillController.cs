@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using H_Bakhshayesh.Shared.ViewModels.Experience;
 using H_Bakhshayesh.Shared.ViewModels.Skill;
 using H_BakhshayeshModels.Context;
 using H_BakhshayeshModels.Models;
@@ -71,6 +72,18 @@ namespace H_Bakhshayesh.Server.Controllers
             var res = _skillServices.Add(skill);
             _skillServices.Save();
             return Ok(res);
+        }
+
+        [HttpGet("GetEntity/{id}")]
+        public IActionResult GetEntity(Guid id)
+        {
+            Skill skill = _skillServices.GetEntity(id);
+            if (skill == null)
+            {
+                return NotFound("چیزی یافت نشد.");
+            }
+            SkillViewModel model = _mapper.Map<Skill, SkillViewModel>(skill);
+            return Ok(model);
         }
     }
 }

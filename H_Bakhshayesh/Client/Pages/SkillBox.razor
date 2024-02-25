@@ -1,0 +1,50 @@
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@if (skillViewModel != null && !String.IsNullOrEmpty(skillViewModel.SkillId.ToString()))
+{
+    <div class="col-4 px-4 Skill-Box my-4">
+        <div class="row">
+            <h5 class="col-6">
+                @if (@skillViewModel.ProgressValue <= 20)
+                {
+                    <span>پایین</span>
+                }
+                else @if (@skillViewModel.ProgressValue <= 40)
+                {
+                    <span>خوب</span>
+                }
+                else @if (@skillViewModel.ProgressValue <= 60)
+                {
+                    <span>متوسط</span>
+                }
+                else @if (@skillViewModel.ProgressValue <= 80)
+                {
+                    <span>عالی</span>
+                }
+                else @if (@skillViewModel.ProgressValue <= 100)
+                {
+                    <span>حرفه‌ای</span>
+                }
+            </h5>
+            <div class="col-6"><h5 class="text-right">@skillViewModel.Name</h5></div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar my-ProgressBar" role="progressbar" style="width: @(@skillViewModel.ProgressValue)%" aria-valuenow="@skillViewModel.ProgressValue" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+    public SkillViewModel? skillViewModel { get; set; }
+}
+@functions{
+    protected override async Task OnInitializedAsync()
+    {
+        skillViewModel = await httpClient.GetFromJsonAsync<SkillViewModel>($"api/Skill/GetEntity/{id}");
+        await base.OnInitializedAsync();
+    }
+}

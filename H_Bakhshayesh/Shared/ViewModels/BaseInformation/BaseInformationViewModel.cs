@@ -23,7 +23,7 @@ namespace H_Bakhshayesh.Shared.ViewModels.BaseInformation
         public string TextField { get; set; } = null!;
         [Required(ErrorMessage = "فیلد {0} ضروری است")]
         [DisplayName("مقدار")]
-        public string? Value { get; set; }
+        public string Value { get; set; }
         [DisplayName("تاریخ آخرین آپدیت")]
         public DateTime? UpdatedOn { get; set; }
     }

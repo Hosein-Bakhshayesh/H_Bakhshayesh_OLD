@@ -1,7 +1,223 @@
-﻿@page "/"
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
 
-<PageTitle>Index</PageTitle>
+@page "/"
 
-<h1>Hello, world!</h1>
+@if(baseInformationViewModels != null)
+{
+    <PageTitle>
+        @if (baseInformationViewModels.Where(t => t.Code == "MyName").FirstOrDefault() != null)
+        {
+            @baseInformationViewModels.Where(t => t.Code == "MyName").FirstOrDefault().Value
+        }
+        else
+        {
+            <span>سایت رزومه</span> 
+        }
+    </PageTitle>
 
-Welcome to your new app.
+    <div id="about" class="container">
+        <div class="bg-white container rounded-4 my-4 py-4">
+            <div class="mb-3 mt-2">
+                <div>
+                    <h2 class="Title-Text">درباره @baseInformationViewModels.Where(t=>t.Code == "MyName").FirstOrDefault().Value</h2>
+                </div>
+            </div>
+            <div id="my-about" class="container rounded-4">
+                <div class="w-100 text-center">
+                    <img src="/Images/profilePhoto.png" class="img-thumbnail rounded-circle" width="120px" />
+                </div>
+                <div class="w-100 container my-3">
+                    <p>
+                        @baseInformationViewModels.Where(t=>t.Code == "AboutMe").FirstOrDefault().Value
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div id="Skill-Backgrond">
+    <div id="skill" class="container rounded rounded-4 py-4">
+        <div class="mb-3 mt-2">
+            <div>
+                <h2 class="Title-Text">تخصص‌ها</h2>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var item in skillViewModels)
+            {
+                <SkillBox id="@item.SkillId" />
+            }
+        </div>
+    </div>
+</div>
+
+<div id="documents">
+    <div id="my-documents" class="container rounded-4 h-100 py-4 my-4">
+        <div class="mb-3 mt-2">
+            <div>
+                <h2 class="Title-Text">مدارک، تقدیرنامه‌ها و افتخارات</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 Document-Box p-4">
+                <div class="w-100 rounded-4 shadow-lg">
+                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
+                    <div class="document-title text-center w-100 p-3">
+                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="experience">
+    <div id="my-experience" class="container rounded-4 my-4 h-100 py-4">
+        <div class="mb-3 mt-2">
+            <div>
+                <h2 class="Title-Text">تجربه‌های من</h2>
+            </div>
+        </div>
+        <div class="mt-5">
+            <div class="w-100 experience-Title m-3">
+                <i class="fa fa-laptop mx-2"></i>
+                برنامه نویس شرکت لجستیک گلدیران
+            </div>
+            <div class="w-100 experience-Title m-3">
+                <i class="fa fa-book mx-2"></i>
+                انجام پروژه‌های دانشجویی
+            </div>
+            <div class="w-100 experience-Title m-3">
+                <i class="fa fa-desktop mx-2"></i>
+                انجام پروژه
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contacts">
+    <div id="my-contacts" class="container rounded-4 my-4 h-100 py-4">
+        <div class="mb-3 mt-2">
+            <div>
+                <h2 class="Title-Text">ارتباط با من</h2>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div id="contacts-form" class="col-6 rounded-4 mx-3">
+                <div class="w-100 text-center my-4">
+                    <h4>پیام خودت رو اینجا بنویس !</h4>
+                    <p>
+                        میتونی برام ایمیل هم بفرستی
+                    </p>
+                    <p>
+                        <i class="fa fa-envelope mx-2"></i>
+                        <a id="my-Email" href="#" class="text-black text-decoration-none" title="ارسال ایمیل">h.bakhshayesh@goldiran.ir</a>
+                    </p>
+                </div>
+                <div class="w-100 text-center my-2 mb-4">
+                    <form action="#" class="px-3">
+                        <input type="text" name="NameInput" id="NameInput" class="form-control my-4" placeholder="نام و نام خانوادگی..." required>
+                        <input type="text" name="Email" id="Email" class="form-control my-4" placeholder="ایمیل..." required>
+                        <textarea name="MessageText" id="MessageText" cols="30" rows="10" class="form-control mt-4 p-2 rounded-bottom-0" placeholder="متن پیام..." required></textarea>
+                        <input type="submit" class="btn btn-success w-100 rounded-bottom-4 rounded-top-0" value="ارسال پیام">
+                    </form>
+                </div>
+            </div>
+            <div class="col-5 mx-3">
+                <img src="/Images/5124556.jpg" alt="contacts" class="w-100 m-auto">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public List<BaseInformationViewModel>? baseInformationViewModels { get; set; };
+    public List<DocumentViewModel>? documentViewModels { get; set; }
+    public List<ExperienceViewModel>? experienceViewModels { get; set; }
+    public List<SkillViewModel>? skillViewModels { get; set; }
+}
+
+@functions{
+    protected override async Task OnInitializedAsync()
+    {
+        baseInformationViewModels = await httpClient.GetFromJsonAsync<List<BaseInformationViewModel>>("api/BaseInformation/GetAll");
+        documentViewModels = await httpClient.GetFromJsonAsync<List<DocumentViewModel>>("api/Document/GetAll");
+        experienceViewModels = await httpClient.GetFromJsonAsync<List<ExperienceViewModel>>("api/Experience/GetAll");
+        skillViewModels = await httpClient.GetFromJsonAsync<List<SkillViewModel>>("api/skillView/GetAll");
+        await base.OnInitializedAsync();
+    }
+}

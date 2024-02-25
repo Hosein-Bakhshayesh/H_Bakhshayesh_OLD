@@ -72,6 +72,18 @@ namespace H_Bakhshayesh.Server.Controllers
             _experienceServices.Save();
             return Ok(res);
         }
+        
+        [HttpGet("GetEntity/{id}")]
+        public IActionResult GetEntity(Guid id)
+        {
+            Experience experience = _experienceServices.GetEntity(id);
+            if(experience == null)
+            {
+                return NotFound("چیزی یافت نشد.");
+            }
+            ExperienceViewModel model = _mapper.Map<Experience,ExperienceViewModel>(experience);
+            return Ok(model);
+        }
 
     }
 }
