@@ -14,17 +14,16 @@ namespace H_Bakhshayesh.Shared.ViewModels.Message
         [Required]
         [DisplayName("آیدی")]
         public Guid MessageId { get; set; }
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد نام و نام خانوادگی ضروری است")]
         [DisplayName("نام و نام خانوادگی")]
         public string FullName { get; set; } = null!;
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد ایمیل ضروری است")]
         [DisplayName("ایمیل")]
         [DataType(DataType.EmailAddress,ErrorMessage = "فیلد {0} بصورت درست وارد نشده است")]
         public string Email { get; set; } = null!;
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
+        [Required(ErrorMessage = "فیلد متن ضروری است")]
         [DisplayName("متن پیام")]
         public string Text { get; set; } = null!;
-        [Required(ErrorMessage = "فیلد {0} ضروری است")]
         [DisplayName("تاریخ ایجاد")]
         public DateTime CreatedOn { get; set; }
     }

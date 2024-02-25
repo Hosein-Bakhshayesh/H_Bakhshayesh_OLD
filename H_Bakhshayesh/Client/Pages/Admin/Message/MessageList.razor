@@ -1,0 +1,77 @@
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@page "/Admin/MessageList"
+@layout AdminMainLayout
+
+<h3>پیغام‌ها</h3>
+
+@if(messageViewModels != null && messageViewModels.Count > 0)
+{
+    <table class="table table-bordered mt-2">
+        <thead>
+            <tr>
+                <th class="text-center">ردیف</th>
+                <th class="text-center">نام و نام خانوادگی</th>
+                <th class="text-center">متن پیغام</th>
+                <th class="text-center">ایمیل</th>
+                <th class="text-center">تاریخ ثبت</th>
+                <th class="text-center">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in messageViewModels)
+            {
+                <tr>
+                    <td class="text-center">
+                        @(index++)
+                    </td>
+                    <td class="text-center">
+                        @item.FullName
+                    </td>
+                    <td class="text-center">
+                        @item.Text
+                    </td>
+                    <td class="text-center">
+                        @item.Email
+                    </td>
+                    <td class="text-center">
+                        @item.CreatedOn.ToString("yyyy/MM/dd")
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-danger w-25 m-auto" @onclick="@(()=>DeleteMessage(item))">حذف</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger w-100">
+        هیچ پیغامی برای شما ثبت نشده است.
+    </div>
+}
+
+@code {
+    public List<MessageViewModel>? messageViewModels { get; set; }
+    public int index = 0;
+}
+
+@functions{
+    protected override async Task OnInitializedAsync()
+    {
+        messageViewModels = await httpClient.GetFromJsonAsync<List<MessageViewModel>>("api/Message/GetAll");
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteMessage(MessageViewModel model)
+    {
+        var res = await httpClient.PostAsJsonAsync<MessageViewModel>("api/Message/Delete", model);
+        if(res!=null)
+        {
+            navigationManager.NavigateTo("/Admin/MessageList", true);
+        }
+    }
+}

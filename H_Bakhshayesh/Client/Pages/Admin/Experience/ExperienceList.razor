@@ -1,0 +1,192 @@
+﻿@using System.Globalization;
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@page "/Admin/ExperienceList"
+@layout AdminMainLayout
+
+<h3>تجربه‌ها</h3>
+
+<div @onclick="@AddExperienceDisplay" class="btn btn-success my-4 @addBtnDisplay w-25">
+    تجربه جدید
+</div>
+<EditForm Model="@AddExperienceViewModel" class="@displayAdd">
+    <div class="w-100 my-4">
+
+        <div>
+            <span class="text-danger">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </span>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-6 w-100">
+                <label>
+                    عنوان : <span class="text-danger">*</span>
+                </label>
+                <InputText @bind-Value="@AddExperienceViewModel.Title" class="form-control" placeholder="عنوان" />
+            </div>
+            <div class="col-6 w-100">
+                <label>
+                    نام آیکون : <span class="text-danger">*</span>
+                    <i class="mx-2 oi oi-@(AddExperienceViewModel.Icon)"></i>
+                </label>
+                <InputText @bind-Value="@AddExperienceViewModel.Icon" class="form-control mx-2" placeholder="نام آیکون" />
+            </div>
+            <div class="col-12 w-100 mt-2">
+                <label>
+                    توضیحات : <span class="text-danger"></span>
+                </label>
+                <InputTextArea @bind-Value="@AddExperienceViewModel.Description" class="form-control mx-2" placeholder="توضیحات" />
+            </div>
+            <div class="row text-center col-12 w-100 my-4 me-auto">
+                <button @onclick="@(()=>HandleValidSubmit(AddExperienceViewModel))" class="btn btn-success col-2">
+                    اضافه کردن
+                </button>
+                <button type="button" class="btn btn-danger mx-3 col-2 @closeBtnDisplay" @onclick="@AddExperienceDisplay">
+                    بستن
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@if (experienceViewModels != null && experienceViewModels.Count > 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">ردیف</th>
+                <th class="text-center">عنوان</th>
+                <th class="text-center">آیکون</th>
+                <th class="text-center">توضیحات</th>
+                <th class="text-center">آخرین آپدیت</th>
+                <th class="text-center">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in experienceViewModels)
+            {
+                <tr>
+                    <td class="text-center">
+                        <b>@(index++)</b>
+                    </td>
+                    <td class="text-center">
+                        <InputText @bind-Value="@item.Title" class="form-control" />
+                    </td>
+                    <td class="text-center">
+                        <div>
+                            <InputText @bind-Value="@item.Icon" class="form-control" />
+                            <div class="text-center my-2 w-100">
+                                <i class="m-auto oi oi-@(item.Icon)"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <InputTextArea @bind-Value="@item.Description" class="form-control w-100"/>
+                    </td>
+                    <td class="text-center">
+                        @if(item.UpdatedOn.HasValue)
+                        {
+                            @item.UpdatedOn.Value.ToString("yyyy/MM/dd");
+                        }
+                        else
+                        {
+                            @item.CreatedOn.ToString("yyyy/MM/dd");
+                        }
+                    </td>
+                    <td class="text-center">
+                        <div class="row w-100 text-center p-0 mx-0">
+                            <button @onclick="@(()=>UpdateExperience(item))" class="btn btn-warning col-5 mx-1">ویرایش</button>
+                            <button @onclick="@(()=>DeleteExperience(item))" class="btn btn-danger col-5 mx-1">حذف</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger w-100">
+        تجربه‌ای ثبت نشده است.<br />
+        اولین تجربه خود را ثبت کنید.
+    </div>
+}
+
+@code {
+    public List<ExperienceViewModel>? experienceViewModels { get; set; }
+    public int index = 1;
+    public ExperienceViewModel AddExperienceViewModel = new ExperienceViewModel();
+    public string displayAdd = "d-none";
+    public string addBtnDisplay = "d-block";
+    public string closeBtnDisplay = "d-none";
+}
+
+@functions {
+    protected override async Task OnInitializedAsync()
+    {
+        experienceViewModels = await httpClient.GetFromJsonAsync<List<ExperienceViewModel>>("api/Experience/GetAll");
+        await base.OnInitializedAsync();
+    }
+
+    private async Task UpdateExperience(ExperienceViewModel model)
+    {
+        if(model!= null)
+        {
+            model.UpdatedOn = DateTime.Now;
+            var res = await httpClient.PostAsJsonAsync<ExperienceViewModel>("api/Experience/Update", model);
+            if(res != null)
+            {
+                navigationManager.NavigateTo("/Admin/ExperienceList", true);
+            }
+        }
+    }
+    
+    private async Task DeleteExperience(ExperienceViewModel model)
+    {
+        if(model!= null)
+        {
+            model.UpdatedOn = DateTime.Now;
+            var res = await httpClient.PostAsJsonAsync<ExperienceViewModel>("api/Experience/Delete", model);
+            if(res != null)
+            {
+                navigationManager.NavigateTo("/Admin/ExperienceList", true);
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit(ExperienceViewModel model)
+    {
+        if (model != null)
+        {
+            model.CreatedOn = DateTime.Now;
+            model.UpdatedOn = DateTime.Now;
+            model.ExperienceId = Guid.NewGuid();
+            var res = await httpClient.PostAsJsonAsync<ExperienceViewModel>("api/Experience/Create", model);
+            if (res != null)
+            {
+                navigationManager.NavigateTo("/Admin/SkillList", true);
+            }
+        }
+    }
+
+    private void AddExperienceDisplay()
+    {
+        if (displayAdd == "d-none")
+        {
+            displayAdd = "d-block";
+            addBtnDisplay = "d-none";
+            closeBtnDisplay = "d-block";
+        }
+        else
+        {
+            displayAdd = "d-none";
+            addBtnDisplay = "d-block";
+            closeBtnDisplay = "d-none";
+            AddExperienceViewModel = new ExperienceViewModel();
+        }
+    }
+
+}
