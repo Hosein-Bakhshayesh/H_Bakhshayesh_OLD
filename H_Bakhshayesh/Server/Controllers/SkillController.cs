@@ -85,5 +85,21 @@ namespace H_Bakhshayesh.Server.Controllers
             SkillViewModel model = _mapper.Map<Skill, SkillViewModel>(skill);
             return Ok(model);
         }
+        
+        [HttpGet("GetAllIds")]
+        public IActionResult GetAllIds()
+        {
+            List<Skill> skills = _skillServices.GetAll();
+            if (skills == null)
+            {
+                return NotFound("چیزی یافت نشد.");
+            }
+            List<Guid> ids = new List<Guid>();
+            foreach (Skill skill in skills)
+            {
+                ids.Add(skill.SkillId);
+            }
+            return Ok(ids);
+        }
     }
 }

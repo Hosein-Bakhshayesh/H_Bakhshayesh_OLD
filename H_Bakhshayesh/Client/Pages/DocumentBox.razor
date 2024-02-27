@@ -1,0 +1,15 @@
+﻿@if(document != null)
+{
+    <div class="col-3 Document-Box p-4">
+        <div class="w-100 rounded-4 shadow-lg">
+            <img src="@document.FilePath" alt="@document.Title" class="w-100 rounded-top-4" />
+            <div class="document-title text-center w-100 p-3">
+                <h5>@document.Title</h5>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public DocumentViewModel? document { get; set; }
+}

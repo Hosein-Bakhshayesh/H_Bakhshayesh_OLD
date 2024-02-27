@@ -1,8 +1,5 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
+@import url('font-awesome.min.css');
 
 h1:focus {
     outline: none;
@@ -19,7 +16,8 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 !important;
+    outline: 0 !important;
 }
 
 .content {
@@ -99,3 +97,167 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+
+@font-face {
+    font-family: 'TanhaWeb';
+    src: url("fonts/Tanha/Tanha-FD.ttf") format('truerype');
+    src: url("fonts/Tanha/Tanha-FD.woff") format('woff');
+    src: url("fonts/Tanha/Tanha-FD.woff2") format('woff2');
+}
+
+@font-face {
+    font-family: 'yekanWeb';
+    src: url("fonts/Yekan/Yekan.ttf") format('truerype');
+    src: url("fonts/Yekan/Yekan.woff") format('woff');
+}
+
+@font-face {
+    font-family: 'IranSansWeb';
+    src: url("fonts/IranSans/IranSans.ttf") format('truerype');
+    src: url("fonts/IranSans/IranSans.woff") format('woff');
+    src: url("fonts/IranSans/IranSans.woff2") format('woff2');
+}
+
+body {
+    font-family: 'TanhaWeb';
+    font-size: medium;
+    background-color: #F4F5F7;
+}
+
+#my-Nav {
+    background-color: rgb(201, 201, 201, 0.80);
+}
+
+#navbar-fixed {
+    position: fixed; /* Set the navbar to fixed position */
+    top: 1vh; /* Position the navbar at the top of the page */
+    z-index: 10;
+    width: 100%;
+}
+
+.nav-link {
+    color: white;
+    transition-duration: 0.2s;
+}
+
+    .nav-link:hover {
+        color: #ffc815;
+    }
+
+#Intro {
+    padding-top : 20vh;
+}
+
+#my-header {
+    height: 100vh;
+    background-image: url("../Images/headerBackgroundPicture.webp");
+    background-size: cover;
+    background-repeat: no-repeat;
+    align-items: center;
+}
+
+#Main-Title {
+    color: white;
+    font-family: 'yekanWeb' !important;
+    font-weight: bolder;
+    font-size: 70px;
+}
+
+#Intro_Text {
+    color: white;
+    margin-top: 30px !important;
+}
+
+#Full-Stack {
+    color: #ffc815;
+}
+
+#about {
+    height: 100vh;
+}
+
+#about-text{
+    line-height:50px;
+}
+
+#Skill-Backgrond {
+    height: 100vh;
+    background-image: url("../Images/SkillBackground.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#skill{
+    background-color: white;
+}
+
+.Title-Text {
+    font-family: 'IranSansWeb' !important;
+    font-weight: bolder !important;
+    letter-spacing: -1px;
+    color: #ffc815;
+}
+
+#about-Background {
+    background-color: #F4F5F7 !important;
+}
+
+.my-ProgressBar {
+    background-color: #ffc815 !important;
+}
+
+#my-documents {
+    background-color: white;
+}
+
+.Document-Box {
+    transition-duration: .3s;
+}
+
+    .Document-Box:hover {
+        scale: 105%;
+    }
+
+.document-title {
+    line-height: 150%;
+}
+
+#my-experience {
+    background-color: white;
+}
+
+.experience-Title {
+    font-weight: bold;
+    font-size: large;
+    transition-duration: .3s;
+}
+
+    .experience-Title:hover {
+        text-shadow: 0px 0px 10px #ffc815;
+    }
+
+#my-contacts {
+    background-color: white;
+}
+
+#contacts-form {
+    background-color: #F4F5F7;
+}
+
+#my-Email {
+    transition-duration: .3s;
+}
+
+    #my-Email:hover {
+        color: blue !important;
+    }
+
+#my-footer {
+    background-color: #ffc815;
+    color: #585858;
+}
+
+#my-about {
+    background-color: white;
+}

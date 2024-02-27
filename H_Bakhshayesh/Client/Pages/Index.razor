@@ -7,9 +7,9 @@
 @if(baseInformationViewModels != null)
 {
     <PageTitle>
-        @if (baseInformationViewModels.Where(t => t.Code == "MyName").FirstOrDefault() != null)
+        @if (!string.IsNullOrEmpty(MyName))
         {
-            @baseInformationViewModels.Where(t => t.Code == "MyName").FirstOrDefault().Value
+            @MyName
         }
         else
         {
@@ -18,129 +18,83 @@
     </PageTitle>
 
     <div id="about" class="container">
-        <div class="bg-white container rounded-4 my-4 py-4">
+        <div id="about-Background" class="bg-white container rounded-4 my-4 py-4">
             <div class="mb-3 mt-2">
                 <div>
-                    <h2 class="Title-Text">درباره @baseInformationViewModels.Where(t=>t.Code == "MyName").FirstOrDefault().Value</h2>
+                    <h2 class="Title-Text">درباره 
+                        @if(!string.IsNullOrEmpty(MyName))
+                        {
+                            @MyName
+                        }
+                    </h2>
                 </div>
             </div>
-            <div id="my-about" class="container rounded-4">
-                <div class="w-100 text-center">
+            <div id="my-about" class="container rounded-4 mt-4">
+                <div class="w-100 text-center pb-3">
                     <img src="/Images/profilePhoto.png" class="img-thumbnail rounded-circle" width="120px" />
                 </div>
                 <div class="w-100 container my-3">
-                    <p>
-                        @baseInformationViewModels.Where(t=>t.Code == "AboutMe").FirstOrDefault().Value
-                    </p>
+                    <h5 id="about-text" class="text-justify">
+                        @if (!string.IsNullOrEmpty(AboutMe))
+                        {
+                            @AboutMe
+                        }
+                        else
+                        {
+                            <span class="text-danger">هیچ اطلاعاتی ثبت نشده است.</span>
+                        }
+                    </h5>
                 </div>
             </div>
         </div>
     </div>
 }
 <div id="Skill-Backgrond">
-    <div id="skill" class="container rounded rounded-4 py-4">
+    <div class="container py-4">
         <div class="mb-3 mt-2">
             <div>
                 <h2 class="Title-Text">تخصص‌ها</h2>
             </div>
         </div>
-        <div class="row">
-            @foreach (var item in skillViewModels)
+        <div id="skill" class="row  rounded rounded-4 mt-4">
+            @if(skillIds != null && skillIds.Count > 0)
             {
-                <SkillBox id="@item.SkillId" />
+                @foreach (var item in skillIds)
+                {
+                    <SkillBox id="@item" />
+                }
+            }
+            else
+            {
+                <div class="alert alert-danger w-100">
+                    هنوز تخصصی ثبت نشده است.
+                </div>
             }
         </div>
     </div>
 </div>
 
 <div id="documents">
-    <div id="my-documents" class="container rounded-4 h-100 py-4 my-4">
-        <div class="mb-3 mt-2">
+    <div class="container ">
+        <div class="mb-4 mt-4">
             <div>
                 <h2 class="Title-Text">مدارک، تقدیرنامه‌ها و افتخارات</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
+        <div id="my-documents" class="row rounded-4 h-100 py-4 my-4">
+            @if(documentViewModels != null && documentViewModels.Count > 0)
+            {
+                @foreach (var item in documentViewModels)
+                {
+                    <DocumentBox document="@item" />
+                }
+            }
+            else
+            {
+                <div class="alert alert-danger w-100">
+                    هنوز مدرکی ثبت نشده است.
                 </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 Document-Box p-4">
-                <div class="w-100 rounded-4 shadow-lg">
-                    <img src="Images/Asp.Net Core.png" alt="Asp.Net Core" class="w-100 rounded-top-4" />
-                    <div class="document-title text-center w-100 p-3">
-                        <h5 class="">مدرک پایان دوره Asp.Net از سایت TopLearn</h5>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -152,18 +106,13 @@
             </div>
         </div>
         <div class="mt-5">
-            <div class="w-100 experience-Title m-3">
-                <i class="fa fa-laptop mx-2"></i>
-                برنامه نویس شرکت لجستیک گلدیران
-            </div>
-            <div class="w-100 experience-Title m-3">
-                <i class="fa fa-book mx-2"></i>
-                انجام پروژه‌های دانشجویی
-            </div>
-            <div class="w-100 experience-Title m-3">
-                <i class="fa fa-desktop mx-2"></i>
-                انجام پروژه
-            </div>
+            @if(experienceViewModels != null && experienceViewModels.Count > 0)
+            {
+                @foreach (var item in experienceViewModels)
+                {
+                    <ExperienceBox experienceViewModel="@item" />
+                }
+            }
         </div>
     </div>
 </div>
@@ -184,16 +133,28 @@
                     </p>
                     <p>
                         <i class="fa fa-envelope mx-2"></i>
-                        <a id="my-Email" href="#" class="text-black text-decoration-none" title="ارسال ایمیل">h.bakhshayesh@goldiran.ir</a>
+                        <a id="my-Email" href="#" class="text-black text-decoration-none" title="ارسال ایمیل">
+                            @if (!string.IsNullOrEmpty(Email))
+                            {
+                                @Email
+                            }
+                        </a>
                     </p>
                 </div>
                 <div class="w-100 text-center my-2 mb-4">
-                    <form action="#" class="px-3">
-                        <input type="text" name="NameInput" id="NameInput" class="form-control my-4" placeholder="نام و نام خانوادگی..." required>
-                        <input type="text" name="Email" id="Email" class="form-control my-4" placeholder="ایمیل..." required>
-                        <textarea name="MessageText" id="MessageText" cols="30" rows="10" class="form-control mt-4 p-2 rounded-bottom-0" placeholder="متن پیام..." required></textarea>
-                        <input type="submit" class="btn btn-success w-100 rounded-bottom-4 rounded-top-0" value="ارسال پیام">
-                    </form>
+                    <EditForm Model="@addMessageViewModel" OnValidSubmit="@AddMessage" class="px-3">
+                        <div>
+                            <span class="text-danger">
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                            </span>
+                            <hr />
+                        </div>
+                        <InputText @bind-Value="@addMessageViewModel.FullName" class="form-control my-4" placeholder="نام و نام خانوادگی..." />
+                        <InputText @bind-Value="@addMessageViewModel.Email" class="form-control my-4" placeholder="ایمیل..." />
+                        <InputTextArea @bind-Value="@addMessageViewModel.Text" cols="30" rows="10" class="form-control mt-4 p-2 rounded-bottom-0" placeholder="متن پیام..." />
+                        <button class="btn btn-success w-100 rounded-bottom-4 rounded-top-0">ارسال پیام</button>
+                    </EditForm>
                 </div>
             </div>
             <div class="col-5 mx-3">
@@ -205,10 +166,15 @@
 
 
 @code {
-    public List<BaseInformationViewModel>? baseInformationViewModels { get; set; };
+    public List<BaseInformationViewModel>? baseInformationViewModels { get; set; }
     public List<DocumentViewModel>? documentViewModels { get; set; }
     public List<ExperienceViewModel>? experienceViewModels { get; set; }
-    public List<SkillViewModel>? skillViewModels { get; set; }
+    public List<Guid>? skillIds { get; set; }
+    public MessageViewModel addMessageViewModel = new MessageViewModel();
+    public string? MyName;
+    public string? AboutMe;
+    public string? Email;
+    public string? Iam;
 }
 
 @functions{
@@ -217,7 +183,25 @@
         baseInformationViewModels = await httpClient.GetFromJsonAsync<List<BaseInformationViewModel>>("api/BaseInformation/GetAll");
         documentViewModels = await httpClient.GetFromJsonAsync<List<DocumentViewModel>>("api/Document/GetAll");
         experienceViewModels = await httpClient.GetFromJsonAsync<List<ExperienceViewModel>>("api/Experience/GetAll");
-        skillViewModels = await httpClient.GetFromJsonAsync<List<SkillViewModel>>("api/skillView/GetAll");
+        skillIds = await httpClient.GetFromJsonAsync<List<Guid>>("api/skill/GetAllIds");
+        MyName = baseInformationViewModels.Where(t => t.Code == "MyName").FirstOrDefault().Value;
+        AboutMe = baseInformationViewModels.Where(t => t.Code == "AboutMe").FirstOrDefault().Value;
+        Email = baseInformationViewModels.Where(t => t.Code == "Email").FirstOrDefault().Value;
+        Iam = baseInformationViewModels.Where(t => t.Code == "Iam").FirstOrDefault().Value;
         await base.OnInitializedAsync();
+    }
+
+    private async void AddMessage()
+    {
+        if(addMessageViewModel.Text != null)
+        {
+            addMessageViewModel.MessageId = Guid.NewGuid();
+            addMessageViewModel.CreatedOn = DateTime.Now;
+            var res = httpClient.PostAsJsonAsync<MessageViewModel>("api/Message/Create", addMessageViewModel);
+            if(res != null)
+            {
+                navigationManager.NavigateTo("/", true);
+            }
+        }
     }
 }
