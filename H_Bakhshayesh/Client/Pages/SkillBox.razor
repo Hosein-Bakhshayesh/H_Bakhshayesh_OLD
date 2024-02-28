@@ -4,9 +4,9 @@
 
 @if (skillViewModel != null && !String.IsNullOrEmpty(skillViewModel.SkillId.ToString()))
 {
-    <div class="col-4 px-4 Skill-Box my-4">
+    <div class="col-4 py-4 px-2 Skill-Box my-3">
         <div class="row">
-            <h5 class="col-6">
+            <h5 class="col-3">
                 @if (@skillViewModel.ProgressValue <= 20)
                 {
                     <span>پایین</span>
@@ -28,7 +28,7 @@
                     <span>حرفه‌ای</span>
                 }
             </h5>
-            <div class="col-6"><h5 class="text-right">@skillViewModel.Name</h5></div>
+            <div class="col-9"><h6 class="text-right fw-bold">@skillViewModel.Name</h6></div>
         </div>
         <div class="progress">
             <div class="progress-bar my-ProgressBar" role="progressbar" style="width: @(@skillViewModel.ProgressValue)%" aria-valuenow="@skillViewModel.ProgressValue" aria-valuemin="0" aria-valuemax="100"></div>

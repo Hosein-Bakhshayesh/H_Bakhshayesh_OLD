@@ -37,7 +37,7 @@
                     <h5 id="about-text" class="text-justify">
                         @if (!string.IsNullOrEmpty(AboutMe))
                         {
-                            @AboutMe
+                            @((MarkupString)AboutMe)
                         }
                         else
                         {
@@ -56,7 +56,7 @@
                 <h2 class="Title-Text">تخصص‌ها</h2>
             </div>
         </div>
-        <div id="skill" class="row  rounded rounded-4 mt-4">
+        <div id="skill" class="row  rounded rounded-4 mt-4 px-3">
             @if(skillIds != null && skillIds.Count > 0)
             {
                 @foreach (var item in skillIds)
@@ -76,7 +76,7 @@
 
 <div id="documents">
     <div class="container ">
-        <div class="mb-4 mt-4">
+        <div class="my-5">
             <div>
                 <h2 class="Title-Text">مدارک، تقدیرنامه‌ها و افتخارات</h2>
             </div>
@@ -99,13 +99,13 @@
     </div>
 </div>
 <div id="experience">
-    <div id="my-experience" class="container rounded-4 my-4 h-100 py-4">
-        <div class="mb-3 mt-2">
+    <div class="container">
+        <div class="mb-4 mt-5">
             <div>
                 <h2 class="Title-Text">تجربه‌های من</h2>
             </div>
         </div>
-        <div class="mt-5">
+        <div id="my-experience" class=" my-4 h-100 py-4 rounded-4 mt-5">
             @if(experienceViewModels != null && experienceViewModels.Count > 0)
             {
                 @foreach (var item in experienceViewModels)
@@ -118,14 +118,18 @@
 </div>
 
 <div id="contacts">
-    <div id="my-contacts" class="container rounded-4 my-4 h-100 py-4">
-        <div class="mb-3 mt-2">
+    <div class="container">
+        <div class="mb-4 mt-5">
             <div>
                 <h2 class="Title-Text">ارتباط با من</h2>
             </div>
         </div>
-        <div class="row mt-4">
-            <div id="contacts-form" class="col-6 rounded-4 mx-3">
+        <div id="my-contacts" class=" rounded-4 my-4 h-100 py-4 row">
+            <div class="col-12 alert alert-success @AddMessageDisplay">
+                پیام شما با موفقیت ارسال شد.
+                <a  class="me-auto text-dark opacity-50 pointer-event mx-2 " @onclick="@CloseAddAlert">X</a>
+            </div>
+            <div id="contacts-form" class="col-6 rounded-4 mx-3 mt-4">
                 <div class="w-100 text-center my-4">
                     <h4>پیام خودت رو اینجا بنویس !</h4>
                     <p>
@@ -175,6 +179,7 @@
     public string? AboutMe;
     public string? Email;
     public string? Iam;
+    public string AddMessageDisplay = "d-none";
 }
 
 @functions{
@@ -197,11 +202,17 @@
         {
             addMessageViewModel.MessageId = Guid.NewGuid();
             addMessageViewModel.CreatedOn = DateTime.Now;
-            var res = httpClient.PostAsJsonAsync<MessageViewModel>("api/Message/Create", addMessageViewModel);
+            var res = await httpClient.PostAsJsonAsync<MessageViewModel>("api/Message/Create", addMessageViewModel);
             if(res != null)
             {
-                navigationManager.NavigateTo("/", true);
+                addMessageViewModel = new MessageViewModel();
+                AddMessageDisplay = "d-block";
             }
         }
+    }
+
+    private void CloseAddAlert()
+    {
+        AddMessageDisplay = "d-none";
     }
 }
